@@ -9,8 +9,12 @@ export class GemColor {
 }
 
 export class Gem extends Phaser.GameObjects.Sprite {
-  constructor(scene: Phaser.Scene, color: number) {
+  constructor(scene: Phaser.Scene, public color: number) {
     super(scene, 0, 0, "gems", color);
     this.setScale(2);
+  }
+  setColor = (color:number) => {
+    this.color = color;
+    this.setFrame(color);
   }
 }

@@ -2,6 +2,7 @@ import { MathUtil } from './../util/MathUtil';
 import { Card } from './../game-objects/Card';
 import * as Phaser from "phaser"
 import { Gem } from "./../game-objects/Gem"
+import {Board} from "./../game-objects/Board"
 export class GameScene extends Phaser.Scene {
   /**
    *
@@ -9,10 +10,7 @@ export class GameScene extends Phaser.Scene {
   private cards: Array<Card> = [];
   private cardContainer: Phaser.GameObjects.Container;
   private numCards: number = 5;
-  private tableWidth: number = 7;
-  private tableHeight: number = 5;
-
-  private gemTable: Array<Array<Gem>> = [];
+  private board:Board;
   constructor() {
     super({})
 
@@ -25,7 +23,7 @@ export class GameScene extends Phaser.Scene {
 
   create = () => {
 
-    let table = this.add.container(0, 0);
+    this.board = new Board(this);
     this.cardContainer = this.add.container(0, 0);
 
 
@@ -38,30 +36,11 @@ export class GameScene extends Phaser.Scene {
     this.cardContainer.y = this.game.renderer.height + 450;
 
 
-    let cellSize = 80;
-    let alternator = true;
-    for (let y = 0; y < this.tableHeight; y++) {
-      let gemRow = [];
-      for (let x = 0; x < this.tableWidth; x++) {
-        let gem = new Gem(this, Math.round(MathUtil.RandomRange(0, 5)));
-        gem.x = x * cellSize + cellSize / 2;
-        gem.y = y * cellSize + cellSize / 2;
-        gemRow.push(gem);
-        alternator = !alternator;
-        let bg = new Phaser.GameObjects.Sprite(this, x * cellSize + cellSize / 2, y * cellSize + cellSize / 2, "bg", alternator ? 0 : 1);
-        bg.setScale(2);
-        table.add(bg);
-        table.add(gem);
-      }
-      this.gemTable.push(gemRow);
-    }
 
-    table.x = this.game.renderer.width / 2 - table.getBounds().width / 2;
-    table.y = 20;
 
-    let outline = new Phaser.GameObjects.Graphics(this, { lineStyle: { color: 0x7be2f9, width: 10 } });
-    table.add(outline);
-    outline.strokeRoundedRect(- 5, - 5, table.getBounds().width + 10, table.getBounds().height + 10, 10);
+    this.board.x = this.game.renderer.width / 2 - this.board.getBounds().width / 2;
+    this.board.y = 20;
+    this.add.existing(this.board);
 
   }
 
@@ -83,6 +62,10 @@ export class GameScene extends Phaser.Scene {
       card.angle = MathUtil.Lerp(card.angle, angle, 0.1);
     }
     this.cardContainer.x = this.game.renderer.width / 2;
+  }
+
+  clearMatches = () => {
+
   }
 
 
